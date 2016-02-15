@@ -1,0 +1,14 @@
+<div ng-if="$ctrl.isLoading()" layout="row" layout-align="space-around center">
+  <md-progress-circular md-diameter="100"></md-progress-circular>
+</div>
+<div ng-if="!$ctrl.isLoading()">
+  <md-list>
+    <md-list-item class="md-3-line" ng-repeat="flight in $ctrl.flights">
+      <div class="md-list-item-text" layout="column">
+        <h3>{{ flight.callsign }}</h3>
+        <h4>{{ flight.departure }} -> {{ flight.destination }}</h4>
+        <p>EOBT : <span am-time-ago="flight.eobt"></span></p>
+      </div>
+    </md-list-item>
+  </md-list>
+</div>
