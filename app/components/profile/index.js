@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { singleResult } from '../../stub-data/';
+import ngRedux from 'ng-redux';
 
 /**
  * @ngdoc overview
@@ -8,25 +9,26 @@ import { singleResult } from '../../stub-data/';
  * # ARCID : Show a single flight profile
  *
  */
-angular.module('4me.ui.arcid.components.profile', [])
+angular.module('4me.ui.arcid.components.profile', [ngRedux])
 .component('fmeArcidProfile', {
   restrict: 'E',
   controller: profileController,
   templateUrl: 'views/arcid/app/components/profile/index.tpl.html'
 });
 
-profileController.$inject = ['$timeout'];
-function profileController($timeout) {
-  let loading = true;
+profileController.$inject = ['$ngRedux', '$scope'];
+function profileController($ngRedux, $scope) {
+  let unsubscribe = $ngRedux.connect(mapStateToThis)(this);
+  $scope.$on('$destroy', unsubscribe);
 
-  this.flight = {};
-
-  this.isLoading = () => loading;
-
-  this.isProfileEmpty = () => _.isEmpty(this.flight);
-
-  $timeout(() => {
-    loading = false;
-    this.flight = _.clone(singleResult);
-  }, 2000);
+  function mapStateToThis(state) {
+    return {
+      isLoading: state.flightProfile.isLoading,
+      flightId: state.flightProfile.flightId,
+      flight: state.flightProfile.flight,
+      lastUpdated: state.flightProfile.lastUpdated,
+      pointProfile: state.flightProfile.pointProfile,
+      airspaceProfile: state.flightProfile.airspaceProfile
+    }
+  }
 }

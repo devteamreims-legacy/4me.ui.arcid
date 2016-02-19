@@ -1,0 +1,24 @@
+<div ng-if="$ctrl.isLoading" layout="row" layout-align="space-around center">
+  <md-progress-circular
+    md-diameter="100"
+    md-mode="indeterminate"
+  ></md-progress-circular>
+</div>
+<div ng-if="!$ctrl.isLoading">
+  <md-list
+    class="arcid-results"
+  >
+    <md-list-item
+      class="md-3-line"
+      ng-repeat="flight in $ctrl.flights track by $index"
+      ng-click="$ctrl.selectFlight(flight.flightId)"
+      ng-class="{selected: $ctrl.selectedFlightId === flight.flightId}"
+    >
+      <div class="md-list-item-text" layout="column">
+        <h3>{{ flight.callsign }}</h3>
+        <h4>{{ flight.departure }} -> {{ flight.destination }}</h4>
+        <p>EOBT : <span am-time-ago="flight.eobt"></span></p>
+      </div>
+    </md-list-item>
+  </md-list>
+</div>

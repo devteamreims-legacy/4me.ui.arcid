@@ -1,23 +1,26 @@
-<div ng-if="$ctrl.isLoading()" layout="row" layout-align="space-around center">
-  <md-progress-circular md-diameter="100"></md-progress-circular>
+<div ng-if="$ctrl.isLoading" layout="row" layout-align="space-around center">
+  <md-progress-circular
+    md-diameter="100"
+    md-mode="indeterminate"
+  ></md-progress-circular>
 </div>
-<div ng-if="!$ctrl.isLoading() && $ctrl.isProfileEmpty()">
-  <h2>Please choose results on the left</h2>
-</div>
-<div ng-if="!$ctrl.isLoading() && !$ctrl.isProfileEmpty()">
-  <h2>Showing result : {{$ctrl.flight.callsign}}</h2>
-  <h3>{{$ctrl.flight.departure}} -> {{$ctrl.flight.destination}}</h3>
-  <h3>EOBT : <span am-time-ago="$ctrl.flight.eobt"></span></h3>
-  <div layout="column" layout-align="start center" flex>
-    <div
-      ng-repeat="point in $ctrl.flight.pointProfile track by $index"
-      layout="row"
-      layout-fill
-      layout-align="space-between start"
-    >
-      <span flex>{{point.when | amDateFormat: 'HH:mm ZZ'}}</span>
-      <span flex>{{point.point}}</span>
-      <span flex>{{point.level}}</span>
+<div ng-if="!$ctrl.isLoading">
+  <div ng-if="$ctrl.flightId">
+    <h2>Showing result : {{$ctrl.flight.callsign}}</h2>
+    <h3>{{$ctrl.flight.departure}} -> {{$ctrl.flight.destination}}</h3>
+    <h3>EOBT : <span am-time-ago="$ctrl.flight.eobt"></span></h3>
+    <h3>Last updated : <span am-time-ago="$ctrl.lastUpdated"></span></h3>
+    <div layout="column" layout-align="start center" flex>
+      <div
+        ng-repeat="point in $ctrl.pointProfile track by $index"
+        layout="row"
+        layout-fill
+        layout-align="space-between start"
+      >
+        <span flex>{{point.when | amDateFormat: 'HH:mm ZZ'}}</span>
+        <span flex>{{point.point}}</span>
+        <span flex>{{point.level}}</span>
+      </div>
     </div>
   </div>
 </div>

@@ -1,12 +1,12 @@
 import searchbox from './searchbox/';
-import flightsInSector from './flights-in-sector/';
-import partialResults from './partial-results/';
+import resultsAndHistory from './results/';
 import profile from './profile/';
+import errors from './errors/';
 
 angular.module('4me.ui.arcid.components', [
   '4me.ui.arcid.components.searchbox',
-  '4me.ui.arcid.components.flightsInSector',
-  '4me.ui.arcid.components.partialResults',
+  '4me.ui.arcid.components.results',
   '4me.ui.arcid.components.profile',
+  '4me.ui.arcid.components.errors',
   'angularMoment'
 ]);

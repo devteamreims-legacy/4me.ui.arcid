@@ -2,6 +2,12 @@ import _ from 'lodash';
 
 import components from './components/';
 
+import ngRedux from 'ng-redux';
+import rootReducer from './reducers/';
+import thunk from 'redux-thunk';
+import { combineReducers } from 'redux';
+import ngReduxDevTools from 'ng-redux-dev-tools';
+
 /**
  * @ngdoc overview
  * @name 4me.ui.arcid
@@ -19,7 +25,9 @@ var m = angular
       '4me.core.errors',
       '4me.core.organs.services',
       '4me.core.status',
-      '4me.ui.arcid.components'
+      '4me.ui.arcid.components',
+      ngRedux,
+      ngReduxDevTools
   ]);
 
 /**
@@ -123,3 +131,10 @@ function arcidController(errors, notifications, $state) {
 
 }
 
+
+m.config(setupRedux);
+
+setupRedux.$inject = ['$ngReduxProvider', 'devToolsServiceProvider'];
+function setupRedux($ngReduxProvider, devToolsServiceProvider) {
+  $ngReduxProvider.createStoreWith(rootReducer, [thunk], [devToolsServiceProvider.instrument()]);
+}
