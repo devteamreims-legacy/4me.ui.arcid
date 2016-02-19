@@ -53,6 +53,7 @@ export const singleResult = {
   destination: 'LIPZ',
   eobt: Date.now() + 1000*3600*2,
   delay: 34,
+  status: 'in-flight',
   pointProfile: [
     {point: 'BUBLI', level: 254, when: startProfile},
     {point: 'LUVAL', level: 310, when: startProfile + 6*min},

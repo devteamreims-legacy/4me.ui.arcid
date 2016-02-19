@@ -12,6 +12,14 @@ export const ARCID_QUERY_FAIL = 'ARCID_QUERY_FAIL'
 // Uses redux thunk
 export function getFlights(callsign) {
   return (dispatch, getState) => {
+    // Check if loading
+    let isLoading = getState().results.isLoading;
+
+    if(isLoading) {
+      console.log('Already loading !!');
+      return;
+    }
+
     dispatch(start(callsign));
     setTimeout(() => {
       let results = _.filter(partialResults, (f) => f.callsign.toUpperCase() === callsign.toUpperCase());
