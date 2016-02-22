@@ -10,7 +10,7 @@ import merge from 'lodash/merge';
  *   flight: {},
  *   pointProfile: [],
  *   airspaceProfile: []
- * }; 
+ * };
  */
 
 export default function results(state = {flightId: null, pointProfile: [], airspaceProfile: [], isLoading: false, flight: {}}, action) {
