@@ -12,6 +12,7 @@
           <span class="md-headline">{{$ctrl.flight.callsign}}</span>
           <span class="md-subhead">{{$ctrl.flight.departure}} -> {{$ctrl.flight.destination}}</span>
           <span class="md-subhead">EOBT : <span am-time-ago="$ctrl.flight.eobt"></span></span>
+          <span class="md-subhead">Delay : {{$ctrl.flight.delay}} min</span>
         </div>
         <div layout="column">
           <span class="md-subhead">Last updated <span am-time-ago="$ctrl.lastUpdated"></span></span>
