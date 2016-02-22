@@ -20,8 +20,6 @@
     </md-card-header>
     <md-divider></md-divider>
     <md-card-content>
-      <h3>EOBT : <span am-time-ago="$ctrl.flight.eobt"></span></h3>
-      <h3>Last updated : <span am-time-ago="$ctrl.lastUpdated"></span></h3>
       <div layout="column" layout-align="start center" flex>
         <div
           ng-repeat="point in $ctrl.pointProfile track by $index"
