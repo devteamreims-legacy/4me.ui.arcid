@@ -1,12 +1,17 @@
 import _ from 'lodash';
 
-import components from './components/';
+import arcidComponents from './components/';
 
 import ngRedux from 'ng-redux';
 import rootReducer from './reducers/';
+
 import thunk from 'redux-thunk';
+import deepFreeze from 'redux-freeze';
+import createLogger from 'redux-logger';
+
 import { combineReducers } from 'redux';
-import ngReduxDevTools from 'ng-redux-dev-tools';
+
+import arcidNgRedux from './arcidRedux';
 
 /**
  * @ngdoc overview
@@ -25,9 +30,8 @@ var m = angular
       '4me.core.errors',
       '4me.core.organs.services',
       '4me.core.status',
-      '4me.ui.arcid.components',
-      ngRedux,
-      ngReduxDevTools
+      arcidComponents,
+      arcidNgRedux
   ]);
 
 /**
@@ -46,9 +50,7 @@ organConfig.$inject = ['$stateProvider'];
 function organConfig($stateProvider) {
   $stateProvider.state('arcid', {
     url: '/arcid',
-    templateUrl: 'views/arcid/app/index.tpl.html',
-    controller: arcidController,
-    controllerAs: '$ctrl'
+    templateUrl: 'views/arcid/app/index.tpl.html'
   });
 };
 
@@ -125,16 +127,21 @@ function organStatus(statusFactory) {
   return service;
 }
 
-
-arcidController.$inject = ['arcid.errors', 'arcid.notifications', '$state'];
-function arcidController(errors, notifications, $state) {
-
-}
-
-
 m.config(setupRedux);
 
-setupRedux.$inject = ['$ngReduxProvider', 'devToolsServiceProvider'];
-function setupRedux($ngReduxProvider, devToolsServiceProvider) {
-  $ngReduxProvider.createStoreWith(rootReducer, [thunk], [devToolsServiceProvider.instrument()]);
+setupRedux.$inject = ['$arcidNgReduxProvider'];
+function setupRedux($arcidNgReduxProvider) {
+
+  const logger = createLogger();
+
+  $arcidNgReduxProvider.createStoreWith(rootReducer, [thunk, deepFreeze, logger]);
+}
+
+m.run(bootstrapArcid);
+
+bootstrapArcid.$inject = ['$xmanNgRedux', '$rootScope', 'myCwp', 'mySector'];
+function bootstrapArcid($xmanNgRedux, $rootScope, myCwp, mySector) {
+  const store = $xmanNgRedux;
+
+  //bootstrap(store, $rootScope, myCwp, mySector);
 }

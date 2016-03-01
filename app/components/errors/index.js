@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import ngRedux from 'ng-redux';
+import arcidNgRedux from '../../arcidRedux';
 
 /**
  * @ngdoc overview
@@ -8,16 +8,17 @@ import ngRedux from 'ng-redux';
  * # ARCID : Show ARCID Errors
  *
  */
-angular.module('4me.ui.arcid.components.errors', [ngRedux])
+export default angular.module('4me.ui.arcid.components.errors', [arcidNgRedux])
 .component('fmeArcidErrors', {
   restrict: 'E',
   controller: errorsController,
   templateUrl: 'views/arcid/app/components/errors/index.tpl.html'
-});
+})
+.name;
 
-errorsController.$inject = ['$ngRedux', '$scope'];
-function errorsController($ngRedux, $scope) {
-  let unsubscribe = $ngRedux.connect(mapStateToThis)(this);
+errorsController.$inject = ['$arcidNgRedux', '$scope'];
+function errorsController($arcidNgRedux, $scope) {
+  let unsubscribe = $arcidNgRedux.connect(mapStateToThis)(this);
   $scope.$on('$destroy', unsubscribe);
 
   function mapStateToThis(state) {

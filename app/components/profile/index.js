@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { singleResult } from '../../stub-data/';
-import ngRedux from 'ng-redux';
+import arcidNgRedux from '../../arcidRedux';
 
 /**
  * @ngdoc overview
@@ -9,16 +9,17 @@ import ngRedux from 'ng-redux';
  * # ARCID : Show a single flight profile
  *
  */
-angular.module('4me.ui.arcid.components.profile', [ngRedux])
+export default angular.module('4me.ui.arcid.components.profile', [arcidNgRedux])
 .component('fmeArcidProfile', {
   restrict: 'E',
   controller: profileController,
   templateUrl: 'views/arcid/app/components/profile/index.tpl.html'
-});
+})
+.name;
 
-profileController.$inject = ['$ngRedux', '$scope'];
-function profileController($ngRedux, $scope) {
-  let unsubscribe = $ngRedux.connect(mapStateToThis)(this);
+profileController.$inject = ['$arcidNgRedux', '$scope'];
+function profileController($arcidNgRedux, $scope) {
+  let unsubscribe = $arcidNgRedux.connect(mapStateToThis)(this);
   $scope.$on('$destroy', unsubscribe);
 
   function mapStateToThis(state) {

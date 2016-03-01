@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import { partialResults } from '../../stub-data/';
-import ngRedux from 'ng-redux';
 import { getProfile } from '../../actions/profile';
+
+import arcidNgRedux from '../../arcidRedux';
 
 /**
  * @ngdoc overview
@@ -10,17 +11,18 @@ import { getProfile } from '../../actions/profile';
  * # ARCID List of results + history
  *
  */
-angular.module('4me.ui.arcid.components.results', [ngRedux])
+export default angular.module('4me.ui.arcid.components.results', [arcidNgRedux])
 .component('fmeArcidResults', {
   restrict: 'E',
   controller: resultsController,
   templateUrl: 'views/arcid/app/components/results/index.tpl.html'
-});
+})
+.name;
 
-resultsController.$inject = ['$ngRedux', '$scope'];
-function resultsController($ngRedux, $scope) {
+resultsController.$inject = ['$arcidNgRedux', '$scope'];
+function resultsController($arcidNgRedux, $scope) {
   
-  let unsubscribe = $ngRedux.connect(mapStateToThis)(this);
+  let unsubscribe = $arcidNgRedux.connect(mapStateToThis)(this);
   $scope.$on('$destroy', unsubscribe);
 
   this.selectFlight = (flightId) => this.dispatch(getProfile(flightId));
