@@ -9,7 +9,10 @@ import arcidNgRedux from '../../arcidRedux';
  * # ARCID : Show a single flight profile
  *
  */
-export default angular.module('4me.ui.arcid.components.profile', [arcidNgRedux])
+export default angular.module('4me.ui.arcid.components.profile', [
+  arcidNgRedux,
+  'angularMoment'
+])
 .component('fmeArcidProfile', {
   restrict: 'E',
   controller: profileController,
