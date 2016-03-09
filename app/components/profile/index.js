@@ -43,7 +43,7 @@ function profileController($arcidNgRedux, $scope) {
   let unsubscribe = $arcidNgRedux.connect(mapStateToThis)(this);
   $scope.$on('$destroy', unsubscribe);
 
-  this.parseTimeOver = (time) => moment.utc(time).format('hh:mm');
+  this.parseTimeOver = (time) => moment.utc(time).format('HH:mm');
 
   this.forceRefresh = () => this.dispatch(getProfile(this.ifplId, true));
 
