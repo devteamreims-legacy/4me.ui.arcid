@@ -20,7 +20,9 @@
   },
   "homepage": "https://github.com/devteamreims/4me.ui.arcid#readme",
   "dependencies": {
+    "axios": "^0.9.1",
     "lodash": "^4.5.0",
+    "moment": "^2.12.0",
     "ng-redux": "^3.3.3",
     "redux": "^3.3.1",
     "redux-freeze": "^0.1.2",

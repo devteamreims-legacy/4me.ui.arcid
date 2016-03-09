@@ -1,8 +1,10 @@
-import { partialResults } from '../stub-data/';
 import { errorMultiple as profileErrorMultiple, getProfile } from './profile';
 import { add as globalError, clear as globalErrorClear } from './errors';
 
 import _ from 'lodash';
+
+import axios from 'axios';
+import api from '../api';
 
 export const ARCID_QUERY_START = 'ARCID_QUERY_START'
 export const ARCID_QUERY_COMPLETE = 'ARCID_QUERY_COMPLETE'
@@ -13,27 +15,46 @@ export const ARCID_QUERY_FAIL = 'ARCID_QUERY_FAIL'
 export function getFlights(callsign) {
   return (dispatch, getState) => {
     // Check if loading
-    let isLoading = getState().results.isLoading;
+    const isLoading = getState().results.isLoading;
 
     if(isLoading) {
       console.log('Already loading !!');
       return;
     }
 
-    dispatch(start(callsign));
-    setTimeout(() => {
-      let results = _.filter(partialResults, (f) => f.callsign.toUpperCase() === callsign.toUpperCase());
-      if(_.isEmpty(results)) {
-        dispatch(errorNotFound(callsign));
-      } else {
-        if(results.length === 1) {
-          dispatch(completeSingle(results[0]));
-        } else {
-          dispatch(completeMultiple(results));
-        }
-      }
+    if(!callsign) {
+      console.log('arcidQuery/getFlights : A callsign must be provided');
       return;
-    }, 2000);
+    }
+
+    const apiUrl = api.rootPath + api.arcid.searchCallsign;
+    const reqParams = {
+      callsign
+    };
+
+    dispatch(start(callsign));
+
+    return axios.get(apiUrl, {params: reqParams})
+      .then((response) => {
+        console.log(response);
+
+        const results = response.data;
+
+        if(_.isEmpty(results)) {
+          return dispatch(errorNotFound(callsign));
+        }
+
+
+        if(results.length === 1) {
+          return dispatch(completeSingle(results[0]))
+        }
+
+        return dispatch(completeMultiple(results));
+
+      })
+      .catch((err) => {
+        return dispatch(error(err));
+      });
   }
 }
 
@@ -78,6 +99,6 @@ export function completeMultiple(flights) {
 export function completeSingle(flight) {
   return (dispatch, getState) => {
     dispatch(complete([flight]));
-    dispatch(getProfile(flight.flightId));
+    dispatch(getProfile(flight.ifplId));
   }
 }

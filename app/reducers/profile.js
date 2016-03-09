@@ -5,7 +5,7 @@ import merge from 'lodash/merge';
 /*
  * state = {
  *   isLoading: boolean,
- *   flightId: integer,
+ *   ifplId: integer,
  *   when: Date,
  *   flight: {},
  *   pointProfile: [],
@@ -13,32 +13,32 @@ import merge from 'lodash/merge';
  * };
  */
 
-export default function results(state = {flightId: null, pointProfile: [], airspaceProfile: [], isLoading: false, flight: {}}, action) {
+const defaultState = {
+  isLoading: false,
+  ifplId: null,
+  data: {}
+};
+
+
+export default function results(state = defaultState, action) {
   switch(action.type) {
     case Actions.Profile.PROFILE_QUERY_START:
-      return merge({}, state, {
+      return Object.assign({}, state, {
         isLoading: true,
-        flightId: action.flightId,
-        flight: {},
-        pointProfile: {},
-        airspaceProfile: {}
+        ifplId: action.ifplId,
+        data: {}
       });
     case Actions.Profile.PROFILE_QUERY_FAIL:
-      return merge({}, state, {
+      return Object.assign({}, state, {
         isLoading: false,
-        flightId: null,
-        flight: {},
-        pointProfile: {},
-        airspaceProfile: {}
+        ifplId: null,
+        data: {}
       });
     case Actions.Profile.PROFILE_QUERY_COMPLETE:
-      return merge({}, state, {
+      return Object.assign({}, state, {
         isLoading: false,
-        // TODO : limit to XX results
-        lastUpdated: action.lastUpdated,
-        flight: action.flight,
-        pointProfile: action.pointProfile,
-        airspaceProfile: action.airspaceProfile
+        ifplId: action.ifplId,
+        data: _.omit(action, 'type')
       });
   }
   return state;

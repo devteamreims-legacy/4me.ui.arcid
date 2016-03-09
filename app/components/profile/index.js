@@ -1,6 +1,24 @@
 import _ from 'lodash';
-import { singleResult } from '../../stub-data/';
 import arcidNgRedux from '../../arcidRedux';
+
+import moment from 'moment';
+
+import {
+  isLoading,
+  isEmpty,
+  getCallsign,
+  getDeparture,
+  getDestination,
+  getDelay,
+  getEobt,
+  getPointProfile,
+  getLastUpdated,
+  getSelectedIfplId,
+} from '../../selectors/profile';
+
+import {
+  getProfile
+} from '../../actions/profile';
 
 /**
  * @ngdoc overview
@@ -25,14 +43,22 @@ function profileController($arcidNgRedux, $scope) {
   let unsubscribe = $arcidNgRedux.connect(mapStateToThis)(this);
   $scope.$on('$destroy', unsubscribe);
 
+  this.parseTimeOver = (time) => moment.utc(time).format('hh:mm');
+
+  this.forceRefresh = () => this.dispatch(getProfile(this.ifplId, true));
+
   function mapStateToThis(state) {
     return {
-      isLoading: state.flightProfile.isLoading,
-      flightId: state.flightProfile.flightId,
-      flight: state.flightProfile.flight,
-      lastUpdated: state.flightProfile.lastUpdated,
-      pointProfile: state.flightProfile.pointProfile,
-      airspaceProfile: state.flightProfile.airspaceProfile
+      isLoading: isLoading(state),
+      showProfile: !isEmpty(state),
+      ifplId: getSelectedIfplId(state),
+      callsign: getCallsign(state),
+      departure: getDeparture(state),
+      destination: getDestination(state),
+      delay: getDelay(state),
+      eobt: getEobt(state),
+      pointProfile: getPointProfile(state),
+      lastUpdated: moment.utc(getLastUpdated(state)).fromNow(),
     }
   }
 }

@@ -10,7 +10,7 @@ function flightProfile(state = {}, action) {
 }
 
 const rootReducer = combineReducers({
-  flightProfile: profileReducer,
+  profile: profileReducer,
   results: resultsReducer,
   errors: errorsReducer
 });

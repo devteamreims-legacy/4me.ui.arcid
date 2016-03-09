@@ -10,11 +10,11 @@
     <md-list-item
       class="md-3-line"
       ng-repeat="flight in $ctrl.flights track by $index"
-      ng-click="$ctrl.selectFlight(flight.flightId)"
-      ng-class="{selected: $ctrl.selectedFlightId === flight.flightId}"
+      ng-click="$ctrl.selectFlight(flight.ifplId)"
+      ng-class="{selected: $ctrl.selectedIfplId === flight.ifplId}"
     >
       <div class="md-list-item-text" layout="column">
-        <h3>{{ flight.callsign }}</h3>
+        <h3>{{ flight.callsign }} {{$ctrl.selectedIfplId}}</h3>
         <h4>{{ flight.departure }} -> {{ flight.destination }}</h4>
         <p>EOBT : <span am-time-ago="flight.eobt"></span></p>
       </div>

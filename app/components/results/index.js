@@ -4,6 +4,15 @@ import { getProfile } from '../../actions/profile';
 
 import arcidNgRedux from '../../arcidRedux';
 
+import {
+  getSelectedIfplId
+} from '../../selectors/profile';
+
+import {
+  isLoading,
+  getFlights
+} from '../../selectors/results';
+
 /**
  * @ngdoc overview
  * @name 4me.ui.arcid.results
@@ -25,13 +34,13 @@ function resultsController($arcidNgRedux, $scope) {
   let unsubscribe = $arcidNgRedux.connect(mapStateToThis)(this);
   $scope.$on('$destroy', unsubscribe);
 
-  this.selectFlight = (flightId) => this.dispatch(getProfile(flightId));
+  this.selectFlight = (ifpldId) => this.dispatch(getProfile(ifpldId));
 
   function mapStateToThis(state) {
     return {
-      isLoading: state.results.isLoading,
-      flights: state.results.flights,
-      selectedFlightId: state.flightProfile.flightId
-    }
+      isLoading: isLoading(state),
+      flights: getFlights(state),
+      selectedIfplId: getSelectedIfplId(state)
+    };
   }
 }

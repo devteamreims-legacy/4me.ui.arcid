@@ -4,35 +4,32 @@
     md-mode="indeterminate"
   ></md-progress-circular>
 </div>
-<div ng-if="!$ctrl.isLoading && $ctrl.flightId">
-  <md-card>
-    <md-card-header>
-      <md-card-header-text layout="row" layout-align="space-between start">
-        <div layout="column">
-          <span class="md-headline">{{$ctrl.flight.callsign}}</span>
-          <span class="md-subhead">{{$ctrl.flight.departure}} -> {{$ctrl.flight.destination}}</span>
-          <span class="md-subhead">EOBT : <span am-time-ago="$ctrl.flight.eobt"></span></span>
-          <span class="md-subhead">Delay : {{$ctrl.flight.delay}} min</span>
-        </div>
-        <div layout="column">
-          <span class="md-subhead">Last updated <span am-time-ago="$ctrl.lastUpdated"></span></span>
-        </div>
-      </md-card-header-text>
-    </md-card-header>
-    <md-divider></md-divider>
-    <md-card-content>
-      <div layout="column" layout-align="start center" flex>
-        <div
-          ng-repeat="point in $ctrl.pointProfile track by $index"
-          layout="row"
-          layout-fill
-          layout-align="space-between start"
-        >
-          <span flex>{{point.when | amDateFormat: 'HH:mm ZZ'}}</span>
-          <span flex>{{point.point}}</span>
-          <span flex>{{point.level}}</span>
-        </div>
-      </div>
-    </md-card-content>
-  </md-card>
+<div 
+  ng-if="!$ctrl.isLoading && $ctrl.showProfile"
+  flex
+>
+  <div layout="column">
+    <span class="md-headline">{{$ctrl.callsign}}</span>
+    <span class="md-subhead">{{$ctrl.departure}} -> {{$ctrl.destination}}</span>
+    <span class="md-subhead">EOBT : {{$ctrl.eobt}}</span></span>
+    <span class="md-subhead">Delay : {{$ctrl.delay}} min</span>
+  </div>
+  <div layout="row" layout-align="space-between center">
+    <span class="md-subhead">Last updated {{$ctrl.lastUpdated}}</span></span>
+    <md-button ng-click="$ctrl.forceRefresh()">Force refresh</md-button>
+  </div>
+  <md-divider></md-divider>
+  <div layout="column" layout-align="start center" flex>
+    <div
+      ng-repeat="point in $ctrl.pointProfile track by $index"
+      layout="row"
+      layout-fill
+      layout-align="space-around start"
+    >
+      <span>{{::$ctrl.parseTimeOver(point.timeOver)}}</span>
+      <span>{{point.name}}</span>
+      <span>{{point.flightLevel}}</span>
+      <span>{{point.trend}}</span>
+    </div>
+  </div>
 </div>

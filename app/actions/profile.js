@@ -7,50 +7,55 @@ export const PROFILE_QUERY_COMPLETE = 'PROFILE_QUERY_COMPLETE';
 export const PROFILE_QUERY_FAIL = 'PROFILE_QUERY_FAIL';
 export const PROFILE_QUERY_MULTIPLE = 'PROFILE_QUERY_MULTIPLE';
 
+import axios from 'axios';
+import api from '../api';
 
 // Fetches a single flight
 // Uses redux thunk
-export function getProfile(flightId) {
+export function getProfile(ifplId, forceRefresh = false) {
   return (dispatch, getState) => {
     // Here we expect our flightId to be present in state.results.flights
-    let flight = _.find(getState().results.flights, (f) => f.flightId === flightId);
+    let flight = _.find(getState().results.flights, (f) => f.ifplId === ifplId);
     
     if(_.isEmpty(flight)) {
-      dispatch(errorNotFound(flightId));
+      console.log('Should not happen');
+      dispatch(errorNotFound(ifplId));
       return;
     }
 
-    dispatch(start(flightId));
+    dispatch(start(ifplId));
 
-    setTimeout(() => {
-      // Result = results from backend
-      let result = {
-        flight: _.clone(singleResult),
-        pointProfile: _.clone(singleResult.pointProfile),
-        airspaceProfile: [],
-        lastUpdated: Date.now() - 1000*15
-      };
+    const apiUrl = api.rootPath + api.arcid.searchProfile;
+    const reqParams = {ifplId};
+    
+    if(forceRefresh) {
+      Object.assign(reqParams, {forceRefresh: true});
+    }
 
-      // Create a stub flight object from backend
-      let resultFlight = _.clone(singleResult);
-      delete resultFlight.pointProfile;
+    return axios.get(apiUrl, {params: reqParams})
+      .then((response) => {
+        console.log(response);
+
+        const results = response.data;
+
+        if(_.isEmpty(results)) {
+          return dispatch(errorNotFound(ifplId));
+        }
 
 
-      result.flight = _.merge(resultFlight, flight);
 
-      if(_.isEmpty(result)) {
-        dispatch(errorNotFound(flightId, flight.callsign));
-      } else {
-        dispatch(complete(result));
-      }
-      return;
-    }, 2000);
+        return dispatch(complete(results));
+
+      })
+      .catch((err) => {
+        return dispatch(error(err));
+      });
   }
 }
 
-export function errorNotFound(flightId, callsign = '') {
+export function errorNotFound(ifplId, callsign = '') {
   return (dispatch, getState) => {
-    dispatch(globalError(`[id:${flightId}/${callsign}]: Flight not found`));
+    dispatch(globalError(`[id:${ifplId}/${callsign}]: Flight not found`));
     dispatch(error());
   };
 }
@@ -68,26 +73,42 @@ export function error() {
   };
 }
 
-export function start(flightId) {
+export function start(ifplId) {
   return (dispatch, getState) => {
     dispatch(globalErrorClear());
     dispatch({
       type: PROFILE_QUERY_START,
-      flightId
+      ifplId
     });
   };
 }
 
 export function complete(profile = {}) {
-  let {flight, pointProfile, airspaceProfile, lastUpdated} = profile;
+  let {
+    ifplId,
+    callsign,
+    departure,
+    destination,
+    eobt,
+    delay,
+    pointProfile,
+    airspaceProfile,
+    fetched,
+  } = profile;
+
   return (dispatch, getState) => {
     dispatch(globalErrorClear());
     dispatch({
       type: PROFILE_QUERY_COMPLETE,
-      flight,
+      ifplId,
+      callsign,
+      departure,
+      destination,
+      eobt,
+      delay,
       pointProfile,
       airspaceProfile,
-      lastUpdated
+      fetched
     });
   };
 }
