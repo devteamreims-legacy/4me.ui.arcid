@@ -1,18 +1,14 @@
-import * as ActionTypes from '../actions/';
 import { combineReducers } from 'redux';
-import resultsReducer from './results';
 import profileReducer from './profile';
-import errorsReducer from './errors';
-
-
-function flightProfile(state = {}, action) {
-  return state;
-}
+import queryReducer from './query';
+import historyReducer from './history';
+import statusReducer from './status';
 
 const rootReducer = combineReducers({
   profile: profileReducer,
-  results: resultsReducer,
-  errors: errorsReducer
+  query: queryReducer,
+  history: historyReducer,
+  status: statusReducer,
 });
 
 export default rootReducer;

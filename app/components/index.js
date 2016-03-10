@@ -1,12 +1,10 @@
 import searchbox from './searchbox/';
-import resultsAndHistory from './results/';
 import profile from './profile/';
-import errors from './errors/';
+import leftPane from './left-pane';
 
 export default angular.module('4me.ui.arcid.components', [
   searchbox,
-  resultsAndHistory,
   profile,
-  errors
+  leftPane,
 ])
 .name;

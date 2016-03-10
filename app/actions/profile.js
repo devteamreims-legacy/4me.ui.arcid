@@ -1,11 +1,9 @@
-import { singleResult } from '../stub-data/';
 import _ from 'lodash';
-import { add as globalError, clear as globalErrorClear } from './errors';
 
-export const PROFILE_QUERY_START = 'PROFILE_QUERY_START';
-export const PROFILE_QUERY_COMPLETE = 'PROFILE_QUERY_COMPLETE';
-export const PROFILE_QUERY_FAIL = 'PROFILE_QUERY_FAIL';
-export const PROFILE_QUERY_MULTIPLE = 'PROFILE_QUERY_MULTIPLE';
+
+export const START = 'arcid/profile/START';
+export const COMPLETE = 'arcid/profile/COMPLETE';
+export const FAIL = 'arcid/profile/FAIL';
 
 import axios from 'axios';
 import api from '../api';
@@ -14,35 +12,22 @@ import api from '../api';
 // Uses redux thunk
 export function getProfile(ifplId, forceRefresh = false) {
   return (dispatch, getState) => {
-    // Here we expect our flightId to be present in state.results.flights
-    let flight = _.find(getState().results.flights, (f) => f.ifplId === ifplId);
-    
-    if(_.isEmpty(flight)) {
-      console.log('Should not happen');
-      dispatch(errorNotFound(ifplId));
-      return;
-    }
-
     dispatch(start(ifplId));
 
     const apiUrl = api.rootPath + api.arcid.searchProfile;
     const reqParams = {ifplId};
-    
+
     if(forceRefresh) {
       Object.assign(reqParams, {forceRefresh: true});
     }
 
     return axios.get(apiUrl, {params: reqParams})
       .then((response) => {
-        console.log(response);
-
         const results = response.data;
 
         if(_.isEmpty(results)) {
           return dispatch(errorNotFound(ifplId));
         }
-
-
 
         return dispatch(complete(results));
 
@@ -60,24 +45,18 @@ export function errorNotFound(ifplId, callsign = '') {
   };
 }
 
-export function errorMultiple(callsign) {
-  return (dispatch, getState) => {
-    dispatch(globalError(`[${callsign}]: Multiple results, please select one`));
-    dispatch(error());
-  }
-}
-
-export function error() {
+export function error(err) {
   return {
-    type: PROFILE_QUERY_FAIL
+    type: FAIL,
+    error: 'Could not contact arcid backend',
+    rawError: err,
   };
 }
 
 export function start(ifplId) {
   return (dispatch, getState) => {
-    dispatch(globalErrorClear());
     dispatch({
-      type: PROFILE_QUERY_START,
+      type: START,
       ifplId
     });
   };
@@ -97,9 +76,8 @@ export function complete(profile = {}) {
   } = profile;
 
   return (dispatch, getState) => {
-    dispatch(globalErrorClear());
     dispatch({
-      type: PROFILE_QUERY_COMPLETE,
+      type: COMPLETE,
       ifplId,
       callsign,
       departure,

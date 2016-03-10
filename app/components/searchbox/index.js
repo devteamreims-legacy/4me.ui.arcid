@@ -1,5 +1,3 @@
-import Actions from '../../actions/';
-
 import arcidNgRedux from '../../arcidRedux';
 
 /**
@@ -17,24 +15,30 @@ export default angular.module('4me.ui.arcid.components.searchbox', [arcidNgRedux
 })
 .name;
 
+import {
+  isLoading,
+  getQueryCallsign,
+} from '../../selectors/query';
+
+import {
+  startQuery
+} from '../../actions/query';
+
 searchboxController.$inject = ['$arcidNgRedux', '$scope'];
 function searchboxController($arcidNgRedux, $scope) {
-  
-  let unsubscribe = $arcidNgRedux.connect(mapStateToThis)(this);
-  $scope.$on('$destroy', unsubscribe);
-
-  this.submitQuery = () => {
-    if(this.callsign === '') {
-      return;
-    }
-    console.log('Dispatching action !');
-    this.dispatch(Actions.ArcidQuery.getFlights(this.callsign));
-  };
 
   function mapStateToThis(state) {
     return {
-      results: state.results,
-      callsign: state.results.query
-    }
+      isLoading: isLoading(state),
+      query: getQueryCallsign(state),
+    };
   }
+
+  const mapDispatchToThis = {
+    startQuery,
+  };
+
+  let unsubscribe = $arcidNgRedux.connect(mapStateToThis, mapDispatchToThis)(this);
+  $scope.$on('$destroy', unsubscribe);
+
 }

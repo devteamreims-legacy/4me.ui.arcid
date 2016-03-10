@@ -1,44 +1,39 @@
-import Actions from '../actions/';
-import merge from 'lodash/merge';
-
-
-/*
- * state = {
- *   isLoading: boolean,
- *   ifplId: integer,
- *   when: Date,
- *   flight: {},
- *   pointProfile: [],
- *   airspaceProfile: []
- * };
- */
+import {
+  START,
+  COMPLETE,
+  FAIL,
+} from '../actions/profile';
 
 const defaultState = {
   isLoading: false,
   ifplId: null,
-  data: {}
+  data: {},
+  error: null,
 };
 
 
 export default function results(state = defaultState, action) {
   switch(action.type) {
-    case Actions.Profile.PROFILE_QUERY_START:
+    case START:
       return Object.assign({}, state, {
         isLoading: true,
         ifplId: action.ifplId,
-        data: {}
+        data: {},
+        error: null,
       });
-    case Actions.Profile.PROFILE_QUERY_FAIL:
+    case FAIL:
       return Object.assign({}, state, {
         isLoading: false,
         ifplId: null,
-        data: {}
+        data: {},
+        error: action.error,
       });
-    case Actions.Profile.PROFILE_QUERY_COMPLETE:
+    case COMPLETE:
       return Object.assign({}, state, {
         isLoading: false,
         ifplId: action.ifplId,
-        data: _.omit(action, 'type')
+        data: _.omit(action, 'type'),
+        error: null,
       });
   }
   return state;

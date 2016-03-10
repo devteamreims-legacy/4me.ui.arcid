@@ -1,17 +1,17 @@
 <md-input-container md-no-float flex>
-  <form ng-submit="$ctrl.submitQuery()">
+  <form ng-submit="$ctrl.startQuery($ctrl.query)">
   <input
-    ng-model="$ctrl.callsign"
+    ng-model="$ctrl.query"
     type="text"
-    ng-disabled="$ctrl.results.isLoading"
+    ng-disabled="$ctrl.isLoading"
   />
   </form>
 </md-input-container>
 <span>
   <md-button
-    ng-click="$ctrl.submitQuery()"
+    ng-click="$ctrl.startQuery($ctrl.query)"
     class="md-icon-button"
-    ng-disabled="$ctrl.results.isLoading"
+    ng-disabled="$ctrl.isLoading"
   >
     <md-icon md-svg-icon="magnify"></md-icon>
   </md-button>

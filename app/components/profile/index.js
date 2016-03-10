@@ -14,6 +14,8 @@ import {
   getPointProfile,
   getLastUpdated,
   getSelectedIfplId,
+  isErrored,
+  getError,
 } from '../../selectors/profile';
 
 import {
@@ -50,6 +52,8 @@ function profileController($arcidNgRedux, $scope) {
   function mapStateToThis(state) {
     return {
       isLoading: isLoading(state),
+      isErrored: isErrored(state),
+      error: getError(state),
       showProfile: !isEmpty(state),
       ifplId: getSelectedIfplId(state),
       callsign: getCallsign(state),

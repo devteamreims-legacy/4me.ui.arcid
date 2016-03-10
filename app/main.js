@@ -139,9 +139,17 @@ function setupRedux($arcidNgReduxProvider) {
 
 m.run(bootstrapArcid);
 
-bootstrapArcid.$inject = ['$xmanNgRedux', '$rootScope', 'myCwp', 'mySector'];
-function bootstrapArcid($xmanNgRedux, $rootScope, myCwp, mySector) {
-  const store = $xmanNgRedux;
+import {
+  refreshHistory
+} from './actions/history';
 
-  //bootstrap(store, $rootScope, myCwp, mySector);
+import {
+  bootstrap
+} from './bootstrap';
+
+bootstrapArcid.$inject = ['$arcidNgRedux', '$rootScope', 'myCwp', 'mySector'];
+function bootstrapArcid($arcidNgRedux, $rootScope, myCwp, mySector) {
+  const store = $arcidNgRedux;
+
+  bootstrap(store, $rootScope, myCwp, mySector);
 }

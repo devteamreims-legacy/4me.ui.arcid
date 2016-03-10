@@ -4,11 +4,16 @@
     md-mode="indeterminate"
   ></md-progress-circular>
 </div>
-<div 
+<div
+  ng-if="$ctrl.isErrored"
+>
+  {{$ctrl.error}}
+</div>
+<div
   ng-if="!$ctrl.isLoading && $ctrl.showProfile"
   flex
 >
-  <div layout="column">
+  <div layout="column" flex>
     <span class="md-headline">{{$ctrl.callsign}}</span>
     <span class="md-subhead">{{$ctrl.departure}} -> {{$ctrl.destination}}</span>
     <span class="md-subhead">EOBT : {{$ctrl.eobt}}</span></span>
@@ -19,17 +24,24 @@
     <md-button ng-click="$ctrl.forceRefresh()">Force refresh</md-button>
   </div>
   <md-divider></md-divider>
-  <div layout="column" layout-align="start center" flex>
-    <div
-      ng-repeat="point in $ctrl.pointProfile track by $index"
-      layout="row"
-      layout-fill
-      layout-align="space-around start"
-    >
-      <span>{{::$ctrl.parseTimeOver(point.timeOver)}}</span>
-      <span>{{point.name}}</span>
-      <span>{{point.flightLevel}}</span>
-      <span>{{point.trend}}</span>
-    </div>
-  </div>
+  <table style="width: 100%;">
+    <thead>
+      <tr>
+        <th align="center">Est.</th>
+        <th align="center">Point</th>
+        <th align="center">FL</th>
+        <th align="center">Trend</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        ng-repeat="point in $ctrl.pointProfile track by $index"
+      >
+        <td align="center">{{::$ctrl.parseTimeOver(point.timeOver)}}</td>
+        <td align="center">{{point.name}}</td>
+        <td align="center">{{point.flightLevel}}</td>
+        <td align="center">{{point.trend}}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>
