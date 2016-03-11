@@ -19,7 +19,7 @@
     <md-list-item
       class="md-3-line"
       ng-repeat="flight in $ctrl.flights track by $index"
-      ng-click="$ctrl.selectFlight(flight.ifplId)"
+      ng-click="$ctrl.selectFlight(flight.ifplId, flight)"
       ng-class="{selected: $ctrl.selectedIfplId === flight.ifplId}"
     >
       <div class="md-list-item-text" layout="column">

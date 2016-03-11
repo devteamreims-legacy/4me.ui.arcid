@@ -11,6 +11,7 @@ const api = {
     searchCallsign: '/searchFlights',
     searchProfile: '/searchProfiles',
     getHistory: '/history',
+    autocomplete: '/autocomplete',
   },
   socket: 'http://' + window.location.hostname + ':3102'
 };

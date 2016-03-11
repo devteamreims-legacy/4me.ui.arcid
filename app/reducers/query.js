@@ -12,6 +12,10 @@ import {
   QUERY_CLEAR_RESULTS,
 } from '../actions/query';
 
+import {
+  START as PROFILE_START,
+} from '../actions/profile';
+
 
 export default function queryReducer(state = defaultState, action) {
   switch(action.type) {
@@ -22,6 +26,7 @@ export default function queryReducer(state = defaultState, action) {
         isLoading: false,
         error: action.error || null,
         results: action.results || [],
+        callsign: '',
       });
     case QUERY_CLEAR_RESULTS:
       return Object.assign({}, state, defaultState);

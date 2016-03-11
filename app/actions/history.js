@@ -33,13 +33,38 @@ export function refreshHistory() {
   };
 }
 
-export function setHistory(rawData) {
+import {
+  getFlights,
+} from '../selectors/history';
+
+const formatFlight = (item) => _.pick(item, ['ifplId', 'callsign', 'departure', 'destination', 'eobt', 'fetched']);
+
+export function optimisticAdd(item) {
   return (dispatch, getState) => {
-    const formatData = (item) => _.pick(item, ['ifplId', 'callsign', 'departure', 'destination', 'eobt', 'fetched']);
+    const currentHistory = getFlights(getState());
+
+    const flight = formatFlight(item);
+    const ifplId = _.get(flight, 'ifplId');
+
 
     return dispatch({
       type: FETCH_COMPLETE,
-      flights: _.take(_.map(rawData, formatData), HISTORY_SIZE_LIMIT),
+      flights: _.take(
+        [
+          flight,
+          ..._.reject(currentHistory, f => f.ifplId === ifplId),
+        ], HISTORY_SIZE_LIMIT),
+    });
+  }
+}
+
+export function setHistory(rawData) {
+  return (dispatch, getState) => {
+
+
+    return dispatch({
+      type: FETCH_COMPLETE,
+      flights: _.take(_.map(rawData, formatFlight), HISTORY_SIZE_LIMIT),
     });
   };
 }

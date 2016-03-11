@@ -19,12 +19,21 @@ import {
 } from '../../selectors/history';
 
 import {
+  getFlights as getAutocompleteFlights,
+  isLoading as isAutocompleteLoading,
+} from '../../selectors/autocomplete';
+
+import {
   getProfile
 } from '../../actions/profile';
 
 import {
   clearResults
 } from '../../actions/query';
+
+import {
+  optimisticAdd,
+} from '../../actions/history';
 
 /**
  * @ngdoc overview
@@ -44,20 +53,26 @@ export default angular.module('4me.ui.arcid.components.left-pane', [arcidNgRedux
 leftPaneController.$inject = ['$arcidNgRedux', '$scope'];
 function leftPaneController($arcidNgRedux, $scope) {
   const mapStateToThis = (state) => {
-    let flights = [
-      ...getHistoryFlights(state),
-    ];
+    // Order of appearance : queryResults then autocompleteResults then history
 
+    let flights = [];
     const showResultPicker = hasMultipleResults(state);
 
     if(showResultPicker) {
       flights = [
-        ...getResults(state),
-        ...flights
+        ...getResults(state)
+      ];
+    } else if(!_.isEmpty(getAutocompleteFlights(state))) {
+      flights = [
+        ...getAutocompleteFlights(state)
+      ];
+    } else {
+      flights = [
+        ...getHistoryFlights(state),
       ];
     }
 
-    const isLoading = isHistoryLoading(state) || isQueryLoading(state);
+    const isLoading = isHistoryLoading(state) || isQueryLoading(state) || isAutocompleteLoading(state);
 
     return {
       isLoading,
@@ -72,7 +87,12 @@ function leftPaneController($arcidNgRedux, $scope) {
   const mapDispatchToThis = (dispatch) => {
     return {
       clearResults: () => dispatch(clearResults()),
-      selectFlight: (ifplId) => dispatch(getProfile(ifplId)),
+      selectFlight: (ifplId, flight) => {
+        if(flight) {
+          dispatch(optimisticAdd(flight));
+        }
+        dispatch(getProfile(ifplId));
+      },
     };
   };
 

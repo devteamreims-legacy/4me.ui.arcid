@@ -33,23 +33,25 @@ export function getProfile(ifplId, forceRefresh = false) {
 
       })
       .catch((err) => {
-        return dispatch(error(err));
+        if(err.status = 404) {
+          return dispatch(error(`${ifplId} : Flight plan not found`, err));
+        }
+        return dispatch(error(null, err));
       });
   }
 }
 
 export function errorNotFound(ifplId, callsign = '') {
   return (dispatch, getState) => {
-    dispatch(globalError(`[id:${ifplId}/${callsign}]: Flight not found`));
     dispatch(error());
   };
 }
 
-export function error(err) {
+export function error(err, rawError) {
   return {
     type: FAIL,
-    error: 'Could not contact arcid backend',
-    rawError: err,
+    error: err || 'Could not contact arcid backend',
+    rawError
   };
 }
 
