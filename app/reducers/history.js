@@ -11,6 +11,7 @@ const defaultState = {
 import {
   FETCH_START,
   FETCH_COMPLETE,
+  OPTIMISTIC_ADD,
 } from '../actions/history';
 
 export default function historyReducer(state = defaultState, action) {
@@ -23,6 +24,13 @@ export default function historyReducer(state = defaultState, action) {
         error: action.error || null,
         flights: action.flights || [],
         lastUpdated: Date.now(),
+      });
+    case OPTIMISTIC_ADD:
+      return Object.assign({}, state, {
+        flights: [
+          action.flight,
+          ..._.reject(state.flights, f => f.ifplId === action.flight.ifplId),
+        ],
       });
   }
   return state;

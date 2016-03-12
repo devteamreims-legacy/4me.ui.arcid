@@ -8,17 +8,58 @@ export const FAIL = 'arcid/profile/FAIL';
 import axios from 'axios';
 import api from '../api';
 
-// Fetches a single flight
-// Uses redux thunk
-export function getProfile(ifplId, forceRefresh = false) {
+import {
+  optimisticAdd,
+} from './history';
+
+import {
+  clearResults
+} from './query';
+
+import {
+  clear as clearAutocomplete,
+} from './autocomplete';
+
+import {
+  isFlightInHistory,
+} from '../selectors/history';
+
+import {
+  hasMultipleResults,
+} from '../selectors/query';
+
+
+export function getProfile(flight, forceRefresh = false) {
   return (dispatch, getState) => {
+    const ifplId = _.get(flight, 'ifplId');
+    if(!ifplId) {
+      return;
+    }
+
     dispatch(start(ifplId));
+
+    // Clear queries, unless we have multiple results
+    if(!hasMultipleResults(getState())) {
+      dispatch(clearResults());
+    }
+
+    dispatch(clearAutocomplete());
+
 
     const apiUrl = api.rootPath + api.arcid.searchProfile;
     const reqParams = {ifplId};
 
     if(forceRefresh) {
       Object.assign(reqParams, {forceRefresh: true});
+    }
+
+    // If our flight is not in history, optimisticly add it
+    const addToHistory = !isFlightInHistory(ifplId)(getState());
+    console.log('Should we push to history ?');
+    console.log(`addToHistory : ${addToHistory} || forceRefresh ${forceRefresh}`);
+
+    if(addToHistory || forceRefresh) {
+      dispatch(optimisticAdd(flight));
     }
 
     return axios.get(apiUrl, {params: reqParams})

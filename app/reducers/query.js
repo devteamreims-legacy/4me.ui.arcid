@@ -30,6 +30,8 @@ export default function queryReducer(state = defaultState, action) {
       });
     case QUERY_CLEAR_RESULTS:
       return Object.assign({}, state, defaultState);
+    case PROFILE_START:
+      return Object.assign({}, state, {error: null});
   }
   return state;
 }

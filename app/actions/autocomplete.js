@@ -9,6 +9,7 @@ import api from '../api';
 export function startSearch(query) {
   return (dispatch, getState) => {
     if(!query) {
+      dispatch(clear());
       return;
     }
 

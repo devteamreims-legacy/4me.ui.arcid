@@ -7,6 +7,7 @@ import {
   isErrored,
   getError,
   hasMultipleResults,
+  getQueryCallsign as getResultQuery,
 } from '../../selectors/query';
 
 import {
@@ -21,6 +22,7 @@ import {
 import {
   getFlights as getAutocompleteFlights,
   isLoading as isAutocompleteLoading,
+  getQuery as getAutocompleteQuery,
 } from '../../selectors/autocomplete';
 
 import {
@@ -57,12 +59,15 @@ function leftPaneController($arcidNgRedux, $scope) {
 
     let flights = [];
     const showResultPicker = hasMultipleResults(state);
+    let highlightString = '';
 
     if(showResultPicker) {
+      highlightString = getResultQuery(state);
       flights = [
         ...getResults(state)
       ];
     } else if(!_.isEmpty(getAutocompleteFlights(state))) {
+      highlightString = getAutocompleteQuery(state);
       flights = [
         ...getAutocompleteFlights(state)
       ];
@@ -77,6 +82,7 @@ function leftPaneController($arcidNgRedux, $scope) {
     return {
       isLoading,
       flights,
+      highlightString,
       selectedIfplId: getSelectedIfplId(state),
       isErrored: isErrored(state),
       error: getError(state),
@@ -87,11 +93,8 @@ function leftPaneController($arcidNgRedux, $scope) {
   const mapDispatchToThis = (dispatch) => {
     return {
       clearResults: () => dispatch(clearResults()),
-      selectFlight: (ifplId, flight) => {
-        if(flight) {
-          dispatch(optimisticAdd(flight));
-        }
-        dispatch(getProfile(ifplId));
+      selectFlight: (flight) => {
+        dispatch(getProfile(flight, false));
       },
     };
   };

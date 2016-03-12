@@ -16,6 +16,7 @@ import {
   getSelectedIfplId,
   isErrored,
   getError,
+  getFlight,
 } from '../../selectors/profile';
 
 import {
@@ -47,10 +48,11 @@ function profileController($arcidNgRedux, $scope) {
 
   this.parseTimeOver = (time) => moment.utc(time).format('HH:mm');
 
-  this.forceRefresh = () => this.dispatch(getProfile(this.ifplId, true));
+  this.forceRefresh = () => this.dispatch(getProfile(this.flight, true));
 
   function mapStateToThis(state) {
     return {
+      flight: getFlight(state),
       isLoading: isLoading(state),
       isErrored: isErrored(state),
       error: getError(state),

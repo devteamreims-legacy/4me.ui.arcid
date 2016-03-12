@@ -7,4 +7,6 @@ export const getRaw = (state) => p(state);
 
 export const getFlights = (state) => _.get(getRaw(state), 'flights', []);
 
+export const getQuery = (state) => _.get(getRaw(state), 'query', '');
+
 export const isLoading = (state) => !!_.get(getRaw(state), 'isLoading', false);

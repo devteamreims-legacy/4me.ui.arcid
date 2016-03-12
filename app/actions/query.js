@@ -62,13 +62,13 @@ export function startQuery(callsign) {
           return;
         }
 
-        const result = _.head(getResults(getState()));
-        const ifplId = _.get(result, 'ifplId', null);
+        const flight = _.head(getResults(getState()));
+        const ifplId = _.get(flight, 'ifplId', null);
         if(!ifplId) {
           return;
         }
 
-        return dispatch(getProfile(ifplId));
+        return dispatch(getProfile(flight));
       })
       .catch(err => dispatch({
         type: QUERY_COMPLETE,

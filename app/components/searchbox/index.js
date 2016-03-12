@@ -22,11 +22,11 @@ import {
 } from '../../selectors/query';
 
 import {
-  startQuery
+  startQuery as startFullCallsignQuery,
 } from '../../actions/query';
 
 import {
-  startSearch,
+  startSearch as startAutocomplete,
 } from '../../actions/autocomplete';
 
 searchboxController.$inject = ['$arcidNgRedux', '$scope'];
@@ -34,21 +34,26 @@ function searchboxController($arcidNgRedux, $scope) {
 
   const $ctrl = this;
 
-  function mapStateToThis(state) {
+  const mapStateToThis = (state) => {
     return {
       isLoading: isLoading(state),
       query: getQueryCallsign(state),
     };
-  }
+  };
 
-  const mapDispatchToThis = {
-    startQuery,
-    startSearch,
+  const mapDispatchToThis = (dispatch) => {
+    return {
+      startQuery: (query) => {
+        $ctrl.query = '';
+        dispatch(startFullCallsignQuery(query));
+      },
+      startSearch: (query) => dispatch(startAutocomplete(query)),
+    };
   };
 
   let unsubscribe = $arcidNgRedux.connect(mapStateToThis, mapDispatchToThis)(this);
   $scope.$on('$destroy', unsubscribe);
 
-  $scope.$watch('$ctrl.query', _.debounce($ctrl.startSearch, 500));
+  $scope.$watch('$ctrl.query', _.debounce($ctrl.startSearch, 300));
 
 }

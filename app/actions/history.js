@@ -1,5 +1,6 @@
 export const FETCH_COMPLETE = 'arcid/history/FETCH_COMPLETE';
 export const FETCH_START = 'arcid/history/FETCH_START';
+export const OPTIMISTIC_ADD = 'arcid/history/OPTIMISTIC_ADD';
 
 import _ from 'lodash';
 
@@ -41,19 +42,11 @@ const formatFlight = (item) => _.pick(item, ['ifplId', 'callsign', 'departure', 
 
 export function optimisticAdd(item) {
   return (dispatch, getState) => {
-    const currentHistory = getFlights(getState());
-
     const flight = formatFlight(item);
-    const ifplId = _.get(flight, 'ifplId');
-
 
     return dispatch({
-      type: FETCH_COMPLETE,
-      flights: _.take(
-        [
-          flight,
-          ..._.reject(currentHistory, f => f.ifplId === ifplId),
-        ], HISTORY_SIZE_LIMIT),
+      type: OPTIMISTIC_ADD,
+      flight,
     });
   }
 }
